@@ -1,0 +1,9 @@
+#ifndef UN_SIMBOLO_EXCLUSIVO_DE_ESTE_MODULE
+#define UN_SIMBOLO_EXCLUSIVO_DE_ESTE_MODULE 1
+
+void greetings(const char * name);
+
+#endif /*UN_SIMBOLO_EXCLUSIVO_DE_ESTE_MODULE*/
+
+
+
