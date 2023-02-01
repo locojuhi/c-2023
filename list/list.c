@@ -1,4 +1,4 @@
-#include <stdlib.H>
+#include <stdlib.h>
 #include <string.h>
 
 #include "list.h"
@@ -51,18 +51,18 @@ lst * list_copy(lst * other)
 {
     lst * list = list_create();
     if (!other || !other->first) {
-        return lst;
+        return list;
     } else {
         struct node_obj * ptr = other->first;
-        struct node_obj * value = create_node();
+        struct node_obj * value = node_create();
         value->dato = ptr->dato;
         list->first = value;
         for (ptr = ptr->next; ptr; ptr = ptr->next) {
-            value->next = create_node();
+            value->next = node_create();
             value->next->dato = ptr->dato;
             value = value->next;
         }
-        return lst;
+        return list;
     }
 /*
     lst * list = list_create();
@@ -91,7 +91,7 @@ void list_append(lst * obj, int item)
 {
     struct node_obj * ptr = obj->first;
     struct node_obj * value = node_create();
-    obj->dato = item;
+    value->dato = item;
     if (ptr) {
         while(ptr->next) {
             ptr = ptr->next;
@@ -105,14 +105,42 @@ void list_append(lst * obj, int item)
 /** añade un item al inicio */
 void list_prepend(lst * obj, int item)
 {
-    struct node_obj * ptr = create_node();
+    struct node_obj * ptr = node_create();
     ptr->dato = item;
     ptr->next = obj->first;
     obj->first = ptr;
 }
 
 /** añade un item en una posicion intermedia */
-void list_insert(lst * obj, int pos, int item);
+void list_insert_danny(lst * obj, int pos, int item)
+{
+    struct node_obj * ptr = node_create();
+    ptr->dato = item;
+    struct node_obj * previous_node = obj->first;
+    if (pos == 0 || list_size(obj) < 1)
+    {
+       list_prepend(obj, item);
+    } else {
+        for(int i = 0; i < pos; i++)
+        {
+            if (i == 0) 
+            {
+                previous_node = previous_node;
+            } else 
+            {
+                previous_node = previous_node->next;
+
+                if (i == pos)
+                {
+                    ptr->next = previous_node->next;
+                    previous_node->next = ptr;
+                }
+            }
+            
+        }
+    }
+    
+}
 
 /** quita un item de una posicon intermedia */
 void list_remove(lst * obj, int pos);
@@ -131,3 +159,21 @@ int list_item(lst * obj, int pos)
 /** escribe en el item */
 void list_set(lst * obj, int pos, int item);
 
+static struct node_obj * list_node_insert(struct node_obj * obj, int pos, int item)
+{
+    if (pos == 0 || obj == NULL) {
+    struct node_obj * nuevo = node_create();
+    nuevo->dato = item;
+    nuevo->next = obj;
+    return nuevo;
+} 
+    else {
+        obj->next = list_node_insert(obj->next, pos - 1, item);
+        return obj;
+    }
+}
+
+void list_insert(lst * obj, int pos, int item)
+{
+    obj->first = list_node_insert(obj->first, pos, item);
+}
