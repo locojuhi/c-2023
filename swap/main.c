@@ -13,19 +13,3 @@ int main(int argc,char** argv)
     printf("%d %d\n", a, b);
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
