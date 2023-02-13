@@ -64,14 +64,6 @@ lst * list_copy(lst * other)
         }
         return list;
     }
-/*
-    lst * list = list_create();
-    size_t len = list_size(other);
-    for (int i=0; i<len; i++) {
-        list_append(list, list_item(other, i));
-    }
-    return list;
-*/
 }
 
 /** devuelve el tamaño en uso del list */
@@ -111,39 +103,25 @@ void list_prepend(lst * obj, int item)
     obj->first = ptr;
 }
 
-/** añade un item en una posicion intermedia */
-void list_insert_danny(lst * obj, int pos, int item)
+static struct node_obj * _list_remove(struct node_obj * obj, int pos)
 {
-    struct node_obj * ptr = node_create();
-    ptr->dato = item;
-    struct node_obj * previous_node = obj->first;
-    if (pos == 0 || list_size(obj) < 1)
+    if (pos <= 0)
     {
-       list_prepend(obj, item);
+        struct node_obj * temp = obj->next;
+        node_destroy(obj);
+        return temp;
     } else {
-        for(int i = 0; i < pos; i++)
-        {
-            if (i == 0) 
-            {
-                previous_node = previous_node;
-            } else 
-            {
-                previous_node = previous_node->next;
-
-                if (i == pos)
-                {
-                    ptr->next = previous_node->next;
-                    previous_node->next = ptr;
-                }
-            }
-            
-        }
+        obj->next = _list_remove(obj->next, --pos);
+        return obj;
     }
-    
 }
 
 /** quita un item de una posicon intermedia */
-void list_remove(lst * obj, int pos);
+void list_remove(lst * obj, int pos)
+{
+    obj->first = _list_remove(obj->first, pos);
+}
+
 
 /** lee el item */
 int list_item(lst * obj, int pos)
@@ -156,8 +134,23 @@ int list_item(lst * obj, int pos)
     return ptr->dato;
 }
 
+static struct node_obj * _list_set(struct node_obj * obj, int pos, int item)
+{
+    if (pos <= 0)
+    {
+        obj->dato = item;
+        return obj;
+    } else {
+        obj->next = _list_set(obj->next, --pos, item);
+        return obj;
+    }
+}
+
 /** escribe en el item */
-void list_set(lst * obj, int pos, int item);
+void list_set(lst * obj, int pos, int item)
+{
+    obj->first = _list_set(obj->first, pos, item);
+}
 
 static struct node_obj * list_node_insert(struct node_obj * obj, int pos, int item)
 {
