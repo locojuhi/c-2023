@@ -32,7 +32,14 @@ int main (int argc,char ** argv)
 
     _print(list);
 
+    list_remove(list, 2);
+    
+    _print(list);
 
+
+    list_set(list, 3, 9);
+
+    _print(list);
 
     list_destroy(list);
     return EXIT_SUCCESS;
